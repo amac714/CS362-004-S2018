@@ -1,1 +1,2 @@
-This is my assignment-1 submission! Alan Macabuhay - onid: macabuha
+Alan Macabuhay - onid: macabuha
+Assignment-2 submission
