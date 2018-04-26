@@ -37,7 +37,7 @@ int main() {
 		golds[i] = gold;
 	}
 
-	printf("TESTING updateCoinds():\n");
+	printf("TESTING updateCoins():\n");
 
 	bonus = 1;
 	for(handCount = 1; handCount <= 5; handCount++){
