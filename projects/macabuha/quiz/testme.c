@@ -15,19 +15,16 @@ char inputChar()
 char *inputString()
 {
     // TODO: rewrite this function
-    char *letters = "abcdefghijklmnopqrstuvwxyz";
+    char letters[] = "abcdefghijklmnopqrstuvwxyz";
+    char temp[6];
     char *string;
-    char *temp;
-    temp = (char*)malloc(5);
     int i;
     for(i = 0; i < 5; i++){
       temp[i] = letters[rand() % 26];
     }
     temp[5] = '\0';
-    string = temp;
-    free(temp);
-    temp = NULL;
-    return string;
+	  string = temp;
+	  return string;
 }
 
 void testme()
