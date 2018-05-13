@@ -1,3 +1,21 @@
+***RANDOM TEST***
+TESTING villageCard...
+ALL RANDOM TESTS PASSED
+TOTAL ITERATIONS: 200000
+File 'randomtestcard2.c'
+Lines executed:71.43% of 49
+Branches executed:85.71% of 14
+Taken at least once:50.00% of 14
+No calls
+randomtestcard2.c:creating 'randomtestcard2.c.gcov'
+
+File 'dominion.c'
+Lines executed:25.73% of 649
+Branches executed:26.75% of 415
+Taken at least once:18.31% of 415
+No calls
+dominion.c:creating 'dominion.c.gcov'
+
         -:    0:Source:dominion.c
         -:    0:Graph:dominion.gcno
         -:    0:Data:dominion.gcda
