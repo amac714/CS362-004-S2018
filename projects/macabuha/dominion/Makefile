@@ -48,6 +48,7 @@ testShuffle: unittest4.c dominion.o rngs.o
 testAdventurer: cardtest1.c dominion.o rngs.o
 	gcc -o cardtest1 -g cardtest1.c dominion.o rngs.o $(CFLAGS)
 
+
 testSmithy: cardtest2.c dominion.o rngs.o
 	gcc -o cardtest2 -g cardtest2.c dominion.o rngs.o $(CFLAGS)
 

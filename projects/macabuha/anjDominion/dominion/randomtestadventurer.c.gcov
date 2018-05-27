@@ -1,0 +1,240 @@
+        -:    0:Source:randomtestadventurer.c
+        -:    0:Graph:randomtestadventurer.gcno
+        -:    0:Data:randomtestadventurer.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include "rngs.h"
+        -:    4:#include <stdio.h>
+        -:    5:#include <math.h>
+        -:    6:#include <stdlib.h>
+        -:    7:#include <time.h>
+        -:    8:#include <string.h>
+        -:    9:
+        -:   10://globals for fail checks
+        -:   11:int adventurerCardFails = 0;
+        -:   12:// int treasureDrawFails = 0;
+        -:   13:int drawCardFails = 0;
+        -:   14:int shuffleFails = 0;
+        -:   15:int discardFails = 0;
+        -:   16:
+function checkAdventurerCard called 200000 returned 100% blocks executed 83%
+        -:   17:void checkAdventurerCard(int p, struct gameState *post){
+        -:   18:    struct gameState pre;
+        -:   19:    int cardDrawn, treasure;
+        -:   20:    int temphand[MAX_HAND];
+   200000:   21:    int drawntreasure = 0;
+   200000:   22:    int z = 0;
+   200000:   23:    int bonus = 0;
+        -:   24:    int effect, sRes;
+   200000:   25:    int preCoins = 0, postCoins = 0;
+   200000:   26:    int goldDiscards = 0, silverDiscards = 0, copperDiscards = 0;
+        -:   27:
+        -:   28:    //making a copy of the state
+   200000:   29:    memcpy(&pre, post, sizeof(struct gameState));
+        -:   30:
+        -:   31:    //calling adventurerCard via cardEffect
+   200000:   32:    effect = cardEffect(adventurer, 0, 0, 0, post, 0, &bonus);
+        -:   33:
+   200000:   34:    if(effect){
+branch  0 taken 0%
+branch  1 taken 100%
+        -:   35:        //calling adventurerCard failed
+    #####:   36:        adventurerCardFails++;
+    #####:   37:    }
+        -:   38:
+        -:   39:    //adventurerCard expected effect
+ 10800000:   40:    while(drawntreasure<2){
+branch  0 taken 96%
+branch  1 taken 4%
+  5200000:   41:        if (pre.deckCount[p] <1){//if the deck is empty we need to shuffle discard and add to deck
+branch  0 taken 4%
+branch  1 taken 96%
+   200000:   42:            sRes = shuffle(p, &pre);
+        -:   43:
+        -:   44:            //check if shuffle failed g
+   400000:   45:            if(sRes == -1 && pre.deckCount[p] >= 1){
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 0%
+branch  3 taken 100%
+    #####:   46:                shuffleFails++;
+    #####:   47:            }
+   200000:   48:        }
+  5200000:   49:        drawCard(p, &pre);
+  5200000:   50:        cardDrawn = pre.hand[p][pre.handCount[p]-1];//top card of hand is most recently drawn card.
+ 15200000:   51:        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+branch  0 taken 100%
+branch  1 taken 0%
+branch  2 taken 92%
+branch  3 taken 8%
+branch  4 taken 0%
+branch  5 taken 100%
+   400000:   52:            drawntreasure++;
+        -:   53:        else{
+  4800000:   54:            temphand[z]=cardDrawn;
+  4800000:   55:            pre.handCount[p]--; //this should just remove the top card (the most recently drawn one).
+  4800000:   56:            z++;
+        -:   57:        }
+        -:   58:    }
+ 10000000:   59:    while(z-1>=0){
+branch  0 taken 96%
+branch  1 taken 4%
+  4800000:   60:        pre.discard[p][pre.discardCount[p]++]=temphand[z-1]; // discard all cards in play that have been drawn
+  4800000:   61:        z=z-1;
+        -:   62:    }
+        -:   63:
+        -:   64:    //counting the treasures
+        -:   65:    int i;
+ 99200000:   66:    for(i = 0; i < post->handCount[p]; i++){
+branch  0 taken 99%
+branch  1 taken 1%
+ 49400000:   67:        treasure = post->hand[p][i];
+146400000:   68:        if(treasure == copper || treasure == silver || treasure == gold){
+branch  0 taken 98%
+branch  1 taken 2%
+branch  2 taken 99%
+branch  3 taken 1%
+branch  4 taken 0%
+branch  5 taken 100%
+  1000000:   69:            postCoins++;
+  1000000:   70:        }
+ 49400000:   71:    }
+        -:   72:
+ 99200000:   73:    for(i = 0; i < pre.handCount[p]; i++){
+branch  0 taken 99%
+branch  1 taken 1%
+ 49400000:   74:        treasure = pre.hand[p][i];
+146400000:   75:        if(treasure == copper || treasure == silver || treasure == gold){
+branch  0 taken 98%
+branch  1 taken 2%
+branch  2 taken 99%
+branch  3 taken 1%
+branch  4 taken 0%
+branch  5 taken 100%
+  1000000:   76:            preCoins++;
+  1000000:   77:        }
+ 49400000:   78:    }
+        -:   79:
+   200000:   80:    if(postCoins != preCoins){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:   81:        drawCardFails++;
+    #####:   82:    }
+        -:   83:
+        -:   84:    //checking discard pile
+ 10000000:   85:    for(i = 0; i < post->discardCount[p]; i++){
+branch  0 taken 96%
+branch  1 taken 4%
+  4800000:   86:        if(post->discard[p][i] == gold){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:   87:            goldDiscards++;
+  4800000:   88:        }else if(post->discard[p][i] == silver){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:   89:            silverDiscards++;
+  4800000:   90:        }else if(post->discard[p][i] == copper){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:   91:            copperDiscards++;
+    #####:   92:        }
+  4800000:   93:    }
+        -:   94:
+   200000:   95:    if(goldDiscards != 0){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:   96:        discardFails++;
+    #####:   97:    }
+        -:   98:
+   200000:   99:    if(silverDiscards != 0){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:  100:        discardFails++;
+    #####:  101:    }
+        -:  102:
+   200000:  103:    if(copperDiscards != 0){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:  104:        discardFails++;
+    #####:  105:    }
+        -:  106:
+   200000:  107:}
+        -:  108:
+function main called 1 returned 100% blocks executed 86%
+        -:  109:int main(){
+        1:  110:    int seed = 1000;
+        1:  111:    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        -:  112:    struct gameState G;
+        -:  113:    int i, n, player;
+        -:  114:    int randCard, randK;
+        1:  115:    int itr = 200000;
+        -:  116:    //int j;
+        1:  117:    printf("***RANDOM TEST***\n");
+        1:  118:    printf("TESTING adventurerCard...\n");
+        -:  119:
+        -:  120:    //srand(time(NULL));
+        -:  121:
+        1:  122:    SelectStream(2);
+        1:  123:    PutSeed(3);
+        -:  124:    
+   400002:  125:    for(i = 0; i < itr; i++){
+branch  0 taken 99%
+branch  1 taken 1%
+        -:  126:        //initializing gameState
+   200000:  127:        initializeGame(2, k, seed, &G);
+        -:  128:        // for(j = 0; j < sizeof(struct gameState); j++){
+        -:  129:        //     ((char*)&G)[j] = floor(Random() * 256);
+        -:  130:        // }
+        -:  131:        //printf("trace %d\n", i);
+   200000:  132:        player = floor(Random() * 2);
+   200000:  133:        G.deckCount[player] = floor(Random() * (MAX_DECK - 5));
+   200000:  134:        G.discardCount[player] = 0;
+   200000:  135:        G.handCount[player] = floor(Random() * (MAX_HAND - 5));
+   200000:  136:        G.whoseTurn = player;
+        -:  137:
+        -:  138:        //put random cards in player's deck
+ 10400000:  139:        for(n = 0; n < G.deckCount[player]; n++){
+branch  0 taken 96%
+branch  1 taken 4%
+  5000000:  140:            randCard = Random() * 50 + 1;
+  5000000:  141:            randK = Random() * 10;
+  5000000:  142:            if(randCard == 1){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:  143:                G.deck[player][n] = copper;
+  5000000:  144:            }else if(randCard == 2){
+branch  0 taken 4%
+branch  1 taken 96%
+   200000:  145:                G.deck[player][n] = silver;
+  5000000:  146:            }else if(randCard == 3){
+branch  0 taken 0%
+branch  1 taken 100%
+    #####:  147:                G.deck[player][n] = gold;
+    #####:  148:            }else{
+  4800000:  149:                G.deck[player][n] = k[randK];
+        -:  150:            }
+  5000000:  151:        }
+        -:  152:        
+   200000:  153:        checkAdventurerCard(player, &G);
+   200000:  154:    }
+        -:  155:
+        1:  156:    int totalFails = adventurerCardFails + drawCardFails + shuffleFails + discardFails;
+        -:  157:
+        1:  158:    if(totalFails == 0){
+branch  0 taken 100%
+branch  1 taken 0%
+        1:  159:        printf("ALL RANDOM TESTS PASSED\n");
+        1:  160:        printf("TOTAL ITERATIONS: %d\n", itr);
+        1:  161:    }else {
+    #####:  162:        printf("****RESULTS****\n");
+    #####:  163:        printf("TOTAL ITERATIONS: %d\n", itr);
+    #####:  164:        printf("adventurerCard call tests fails: %d\n", adventurerCardFails);
+    #####:  165:        printf("drawCard tests fails: %d\n", drawCardFails);
+    #####:  166:        printf("shuffle tests fails: %d\n", shuffleFails);
+    #####:  167:        printf("# of treasure cards discarded fails: %d\n", discardFails);
+        -:  168:    }
+        -:  169:
+        1:  170:    return 0;
+        -:  171:}
