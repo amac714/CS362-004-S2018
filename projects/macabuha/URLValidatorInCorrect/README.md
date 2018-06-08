@@ -1,4 +1,6 @@
-Final Project part B Submission
+Final Project:
+
+Part-b submission 
 
 Group Members:
 
@@ -7,3 +9,8 @@ Alan Macabuhay (ONID: macabuha)
 Hyejin Ko (ONID: kohy)
 
 Ju An (ONID: anj)
+
+
+
+
+
